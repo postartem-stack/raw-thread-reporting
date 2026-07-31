@@ -1,0 +1,85 @@
+# Automated Monthly Report Generator (Python)
+
+Turn a raw sales CSV into a **branded, client-ready PDF report** with a single
+command. Built to replace the manual "export → recalculate KPIs → reformat
+charts → rebuild the deck" cycle that teams repeat every month.
+
+```bash
+python report.py --input data/raw_thread_sales_clean.csv
+```
+
+> **Note:** This is a demo project built on synthetic sample data for a
+> fictional streetwear brand (*RAW THREAD*) to showcase the workflow. No real
+> customer data is used.
+
+---
+
+## What it does
+
+- Reads a sales export (CSV)
+- Computes KPIs for the reporting month + **month-over-month** change
+- Builds charts in the brand palette (Charcoal `#1A1A1A` / Bone `#E8E0D0`)
+- Lays out a **branded one-page PDF**: header, KPI cards, revenue trend,
+  category & channel breakdowns, and a top-products table
+
+The whole thing runs in **under 30 seconds** — any month, any new data, same
+command.
+
+## Sample output
+
+See [`sample_output/`](sample_output/) for two generated reports
+(March 2025 and the November 2024 peak) produced from the same script — proof
+that it's a reusable tool, not a one-off design.
+
+## Usage
+
+```bash
+# Latest month found in the data (default)
+python report.py --input data/raw_thread_sales_clean.csv
+
+# A specific month
+python report.py --input data/raw_thread_sales_clean.csv --period 2024-11
+
+# Custom output path
+python report.py --input data/raw_thread_sales_clean.csv --period 2025-03 --output march.pdf
+```
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--input` | Path to the sales CSV | required |
+| `--period` | Reporting month `YYYY-MM` | latest month in data |
+| `--output` | Output PDF path | `RAW_THREAD_report_<YYYY_MM>.pdf` |
+
+## Expected input format
+
+A CSV with (at least) these columns:
+
+`OrderDate, Product, Category, Channel, Region, Quantity, UnitPrice, Revenue, Profit`
+
+A ready-to-run sample lives in [`data/`](data/). Adapt the column names at the
+top of `report.py` to fit a different schema.
+
+## Installation
+
+Pure-pip dependencies — no system libraries required (works on Windows, macOS,
+Linux):
+
+```bash
+pip install -r requirements.txt
+```
+
+## How it works
+
+```
+raw CSV  ->  pandas (clean + aggregate + KPIs)  ->  matplotlib (branded charts)
+         ->  reportlab (branded PDF layout)  ->  client-ready report.pdf
+```
+
+## Tech stack
+
+`Python` · `pandas` · `matplotlib` · `reportlab`
+
+---
+
+*Want this adapted to your own data, branding, or delivery schedule (e.g. an
+automated monthly run)? This pattern extends to any recurring report.*

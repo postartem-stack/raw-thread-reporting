@@ -5,7 +5,7 @@ command. Built to replace the manual "export → recalculate KPIs → reformat
 charts → rebuild the deck" cycle that teams repeat every month.
 
 ```bash
-python report.py --input raw_thread_sales_clean.csv
+python report.py --input data/raw_thread_sales_clean.csv
 ```
 
 > **Note:** This is a demo project built on synthetic sample data for a
@@ -27,23 +27,21 @@ command.
 
 ## Sample output
 
-Two generated reports are included, produced from the same script — proof that
-it's a reusable tool, not a one-off design:
-
-- `RAW_THREAD_report_2025_03.pdf`
-- `RAW_THREAD_report_2024_11.pdf` (the November peak)
+See [`sample_output/`](sample_output/) for two generated reports
+(March 2025 and the November 2024 peak) produced from the same script — proof
+that it's a reusable tool, not a one-off design.
 
 ## Usage
 
 ```bash
 # Latest month found in the data (default)
-python report.py --input raw_thread_sales_clean.csv
+python report.py --input data/raw_thread_sales_clean.csv
 
 # A specific month
-python report.py --input raw_thread_sales_clean.csv --period 2024-11
+python report.py --input data/raw_thread_sales_clean.csv --period 2024-11
 
 # Custom output path
-python report.py --input raw_thread_sales_clean.csv --period 2025-03 --output march.pdf
+python report.py --input data/raw_thread_sales_clean.csv --period 2025-03 --output march.pdf
 ```
 
 | Flag | Description | Default |
@@ -58,8 +56,8 @@ A CSV with (at least) these columns:
 
 `OrderDate, Product, Category, Channel, Region, Quantity, UnitPrice, Revenue, Profit`
 
-A ready-to-run sample is included: `raw_thread_sales_clean.csv`. Adapt the
-column names at the top of `report.py` to fit a different schema.
+A ready-to-run sample lives in [`data/`](data/). Adapt the column names at the
+top of `report.py` to fit a different schema.
 
 ## Installation
 
@@ -72,10 +70,10 @@ pip install -r requirements.txt
 
 ## How it works
 
-```
-raw CSV  ->  pandas (clean + aggregate + KPIs)  ->  matplotlib (branded charts)
-         ->  reportlab (branded PDF layout)  ->  client-ready report.pdf
-```
+![Pipeline: sales CSV, then pandas cleans and aggregates, KPIs are compared with the prior month, matplotlib draws branded charts, and reportlab lays out a one-page PDF](docs/pipeline.png)
+
+`raw CSV` → `pandas` (clean + aggregate + KPIs vs prior month) → `matplotlib`
+(branded charts) → `reportlab` (one-page PDF layout) → client-ready report.
 
 ## Tech stack
 
